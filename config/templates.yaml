@@ -1,0 +1,44 @@
+# Farmer-facing wording, per language. Placeholders come from the rule that
+# fired: {day}, {precip_mm}, {tmax_c}, {tmin_c}, {wind_max_kmh}, {horizon}.
+#
+# In production, wording is drafted and field-tested by the research team, and
+# translations are reviewed by native speakers before use. Hindi here is a
+# demo draft and should be reviewed the same way.
+
+en:
+  header: "{place} weather advisory:"
+  no_advisory: "No weather risks expected in the next 3 days. Continue normal field work."
+  day_words:
+    "0": "today"
+    "1": "tomorrow"
+    "2": "day after tomorrow"
+    other: "on {date}"
+  advisories:
+    very_heavy_rain: "{day}: very heavy rain likely ({precip_mm} mm). Do not spray or apply fertilizer. Clear field drainage and protect harvested crop."
+    heavy_rain: "{day}: heavy rain likely ({precip_mm} mm). Postpone spraying and fertilizer. Keep field drains open."
+    moderate_rain: "{day}: moderate rain likely ({precip_mm} mm). Skip irrigation."
+    dry_spell: "No rain expected for the next {horizon} days. Irrigate if soil is dry."
+    heat_wave: "{day}: heat wave (max {tmax_c}°C). Avoid field work 12-4 pm. Give animals shade and water."
+    heat: "{day}: very hot (max {tmax_c}°C). Irrigate in the morning or evening."
+    high_wind: "{day}: strong winds ({wind_max_kmh} km/h). Do not spray. Support tall and climbing crops."
+    cold: "{day}: cold night (min {tmin_c}°C), frost risk. Give light irrigation in the evening."
+    spray_window: "{day}: good weather for spraying."
+
+hi:
+  header: "{place} मौसम सलाह:"
+  no_advisory: "अगले 3 दिन मौसम से कोई खतरा नहीं। खेती का काम सामान्य रूप से करें।"
+  day_words:
+    "0": "आज"
+    "1": "कल"
+    "2": "परसों"
+    other: "{date} को"
+  advisories:
+    very_heavy_rain: "{day} बहुत भारी बारिश ({precip_mm} मिमी) की संभावना। छिड़काव या खाद न डालें। खेत से पानी निकालें और कटी फसल को सुरक्षित रखें।"
+    heavy_rain: "{day} भारी बारिश ({precip_mm} मिमी) की संभावना। छिड़काव और खाद डालना टालें। खेत की नालियाँ खुली रखें।"
+    moderate_rain: "{day} मध्यम बारिश ({precip_mm} मिमी) की संभावना। सिंचाई न करें।"
+    dry_spell: "अगले {horizon} दिन बारिश की संभावना नहीं। मिट्टी सूखी हो तो सिंचाई करें।"
+    heat_wave: "{day} लू (अधिकतम {tmax_c}°C)। दोपहर 12 से 4 बजे तक खेत में काम न करें। पशुओं को छाया और पानी दें।"
+    heat: "{day} तेज़ गर्मी (अधिकतम {tmax_c}°C)। सुबह या शाम को सिंचाई करें।"
+    high_wind: "{day} तेज़ हवा ({wind_max_kmh} किमी/घंटा)। छिड़काव न करें। ऊँची और बेल वाली फसलों को सहारा दें।"
+    cold: "{day} ठंडी रात (न्यूनतम {tmin_c}°C), पाले का खतरा। शाम को हल्की सिंचाई करें।"
+    spray_window: "{day} छिड़काव के लिए मौसम अच्छा है।"

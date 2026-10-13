@@ -1,0 +1,20 @@
+# Second geography, added with ZERO code changes: different districts, a mixed
+# Hindi/English audience, and a voice-first channel mix (no WhatsApp/LLM).
+region_id: bihar-pilot
+description: Bihar expansion districts (district centroids)
+forecast_days: 7
+default_language: hi
+
+locations:
+  - {id: br-patna,       name: Patna,       lat: 25.5941, lon: 85.1376, names: {hi: पटना}}
+  # English unit, e.g. an extension-officer group rather than farmers directly.
+  - {id: br-purnia,      name: Purnia,      lat: 25.7771, lon: 87.4753, language: en}
+  - {id: br-gaya,        name: Gaya,        lat: 24.7914, lon: 85.0002, names: {hi: गया}}
+  - {id: br-muzaffarpur, name: Muzaffarpur, lat: 26.1209, lon: 85.3647, names: {hi: मुज़फ़्फ़रपुर}}
+
+channels:
+  voice:
+    repeat_top: true
+  sms:
+    max_segments: 2
+    substitutions: {"°C": " C"}

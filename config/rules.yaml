@@ -1,0 +1,108 @@
+# Decision logic for farmer weather advisories.
+#
+# Owned jointly by the field research team (thresholds, wording standards) and
+# the data team (schema, validation). Changes go through review like code.
+#
+# Threshold provenance
+# - Rainfall categories follow IMD's 24-hour rainfall terminology:
+#     moderate 15.6-64.4 mm, heavy 64.5-115.5 mm, very heavy 115.6-204.4 mm.
+# - Heat-wave: IMD's absolute criterion for the plains is a maximum of >= 45 degC;
+#   40 degC is IMD's minimum for considering heat-wave conditions in the plains.
+# - Spray window, wind and frost thresholds are AGRONOMIC PLACEHOLDERS for this
+#   demo. In production they would be set and validated by the field research team.
+
+horizon_days: 3            # advisories cover today + next 2 days
+max_blocked_fraction: 0.2  # if QC holds back more than this share of locations, run = degraded
+
+# Physical plausibility bounds used by QC (canonical units).
+bounds:
+  tmax_c: [-10, 52]
+  tmin_c: [-20, 40]
+  precip_mm: [0, 500]
+  precip_prob_pct: [0, 100]
+  wind_max_kmh: [0, 200]
+
+rules:
+  - id: rain.very_heavy.imd
+    advisory: very_heavy_rain
+    severity: critical
+    priority: 1
+    scope: any_day
+    when:
+      - {field: precip_mm, op: ">=", value: 115.6}
+    suppresses: [heavy_rain, moderate_rain, spray_window, dry_spell]
+
+  - id: rain.heavy.imd
+    advisory: heavy_rain
+    severity: high
+    priority: 2
+    scope: any_day
+    when:
+      - {field: precip_mm, op: ">=", value: 64.5}
+    suppresses: [moderate_rain, spray_window, dry_spell]
+
+  - id: heat.heatwave.imd_absolute
+    advisory: heat_wave
+    severity: critical
+    priority: 1
+    scope: any_day
+    when:
+      - {field: tmax_c, op: ">=", value: 45.0}
+    suppresses: [heat]
+
+  - id: heat.hot_day
+    advisory: heat
+    severity: medium
+    priority: 4
+    scope: any_day
+    when:
+      - {field: tmax_c, op: ">=", value: 40.0}
+
+  - id: wind.strong
+    advisory: high_wind
+    severity: high
+    priority: 3
+    scope: any_day
+    when:
+      - {field: wind_max_kmh, op: ">=", value: 40.0}
+    suppresses: [spray_window]
+
+  - id: cold.frost_risk
+    advisory: cold
+    severity: high
+    priority: 3
+    scope: any_day
+    when:
+      - {field: tmin_c, op: "<=", value: 4.0}
+
+  - id: rain.moderate.imd
+    advisory: moderate_rain
+    severity: medium
+    priority: 5
+    scope: any_day
+    when:
+      - {field: precip_mm, op: ">=", value: 15.6}
+      - {field: precip_prob_pct, op: ">=", value: 60}
+    suppresses: [dry_spell]
+
+  - id: dry.no_rain_horizon
+    advisory: dry_spell
+    severity: info
+    priority: 6
+    scope: horizon
+    when:
+      - {agg: sum, field: precip_mm, op: "<", value: 2.5}
+      - {agg: max, field: tmax_c, op: ">=", value: 30.0}
+
+  - id: ops.spray_window
+    advisory: spray_window
+    severity: info
+    priority: 7
+    scope: any_day
+    when:
+      - {field: precip_mm, op: "<", value: 1.0}
+      - {field: precip_prob_pct, op: "<", value: 30}
+      - {field: wind_max_kmh, op: "<", value: 15.0}
+      - {field: precip_next_day_mm, op: "<", value: 2.5}
+      # Spraying in high heat loses product to evaporation and risks leaf scorch.
+      - {field: tmax_c, op: "<", value: 35.0}

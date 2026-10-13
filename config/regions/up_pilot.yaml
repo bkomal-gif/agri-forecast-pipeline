@@ -1,0 +1,24 @@
+# Region config: everything location-specific lives here, nothing in code.
+# Replicating to a new geography = copy this file, change locations/channels.
+region_id: up-pilot
+description: Uttar Pradesh pilot districts (district centroids)
+forecast_days: 7
+default_language: hi
+
+locations:
+  - {id: up-varanasi,  name: Varanasi,  lat: 25.3176, lon: 82.9739, names: {hi: वाराणसी}}
+  - {id: up-lucknow,   name: Lucknow,   lat: 26.8467, lon: 80.9462, names: {hi: लखनऊ}}
+  - {id: up-gorakhpur, name: Gorakhpur, lat: 26.7606, lon: 83.3732, names: {hi: गोरखपुर}}
+  - {id: up-jhansi,    name: Jhansi,    lat: 25.4484, lon: 78.5685, names: {hi: झाँसी}}
+  - {id: up-bahraich,  name: Bahraich,  lat: 27.5743, lon: 81.5961, names: {hi: बहराइच}}
+
+# Channel mix for this region, with per-channel options.
+channels:
+  sms:
+    max_segments: 3
+    substitutions: {"°C": " C"}   # keep English SMS in GSM-7 (see channels.py)
+  whatsapp:
+    template_name: weather_advisory_v1
+  voice:
+    repeat_top: true
+  llm: {}

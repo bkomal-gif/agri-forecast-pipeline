@@ -1,0 +1,36 @@
+# Runs the live pipeline every morning and keeps the outputs as build artifacts.
+# 00:25 UTC = 05:55 IST, so messages are ready before farmers start field work.
+name: daily-forecast-run
+on:
+  schedule:
+    - cron: "25 0 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false            # one region failing must not stop the others
+      matrix:
+        region: [up_pilot, bihar_pilot]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -r requirements.txt
+      - name: Run pipeline (live Open-Meteo forecast)
+        env: {PYTHONPATH: src}
+        run: python -m pipeline.run --region config/regions/${{ matrix.region }}.yaml --source open-meteo
+        # exit 1 = failed, exit 2 = degraded -> the job turns red and GitHub notifies
+      - name: Publish run report to the job summary
+        if: always()
+        run: cat outbox/*/run_report.md >> "$GITHUB_STEP_SUMMARY" || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: outbox-${{ matrix.region }}
+          path: |
+            outbox/
+            data/audit.sqlite
+          retention-days: 30
