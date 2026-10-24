@@ -1,7 +1,7 @@
 __pycache__/
 *.pyc
 .pytest_cache/
-outbox/
-data/
+/outbox/
+/data/
 *.egg-info/
 .venv/
